@@ -249,14 +249,14 @@
         var app = new Vue({
             el: '#app',
             data: {
-                album : oktaData.profile.organization
+                album : oktaData.profile.organization,
                 res_data : {}, 
                 people: []
             },
             watch: {
                 // whenever question changes, this function will run
                 album: function (newAlb, oldAlb) {
-                    if (newAlb != oldAlb) {
+                    if (newAlb.length > 2 && newAlb != oldAlb) {
                         this.get_people();
                     }
                 }
@@ -268,7 +268,7 @@
                 get_people(){
                     var __this1 = this; 
                     $.ajax({
-                        url: 'https://api.imgur.com/3/album/bdiXhWX/images',
+                        url: 'https://api.imgur.com/3/album/'+this.album+'/images',
                         type: 'GET',
                         headers: {
                             Authorization: "Bearer b5a7a4d2240866875333ec725bbb44b8dcb2f85c",
