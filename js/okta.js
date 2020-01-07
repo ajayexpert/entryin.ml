@@ -45,14 +45,7 @@
 
                     $('#cust_preloader').addClass('hide');
 
-
-                    $.ajax({
-                        url : 'https://dev-327182.okta.com/api/v1/users/me',
-                        type: 'GET',
-                        success: function(result) {
-                            
-                        }
-                    });
+                    getOktaUserInfo();
 
                 }
                 else{
