@@ -247,59 +247,68 @@
 		============================================ -->
     <script>
         var app = new Vue({
-          el: '#app',
-          data: {
-            res_data : {}, 
-            people: []
-          },
-          mounted(){
-            this.get_people();
-          },
-          methods : {
-            get_people(){
-                var __this1 = this; 
-                $.ajax({
-                    url: 'https://api.imgur.com/3/album/bdiXhWX/images',
-                    type: 'GET',
-                    headers: {
-                        Authorization: "Bearer b5a7a4d2240866875333ec725bbb44b8dcb2f85c",
-                        Accept: 'application/json'
-                    },
-                    success: function(result) {
-                        if (result.status = 200) {
-                            __this1.res_data = result;
-                            __this1.fix_array();
-                        }
-                    }
-                });
+            el: '#app',
+            data: {
+                album : oktaData.profile.organization
+                res_data : {}, 
+                people: []
             },
-            fix_array(){
-                this.people = _.chain(this.res_data).get('data', [])
-                                .map(objd => {
-                                    var tmpObj = {
-                                            "url" : objd.link,
-                                            "name" : objd.title,
-                                            "phone" : objd.name,
-                                            "email" : objd.description,
-                                        };
-
-                                    try {
-                                        tmpObj = {
-                                            "url" : objd.link,
-                                            "name" : atob(objd.title),
-                                            "phone" : atob(objd.name),
-                                            "email" : _.get(JSON.parse(atob(objd.description)), 'email', atob(objd.description)),
-                                        }
-                                    }catch(e) {
-                                        
-                                    }
-                                    
-                                    return tmpObj
-
-                                })
-                                .chunk(4).value();
+            watch: {
+                // whenever question changes, this function will run
+                album: function (newAlb, oldAlb) {
+                    if (newAlb != oldAlb) {
+                        this.get_people();
+                    }
+                }
+            },
+            /*mounted(){
+                this.get_people();
+            },*/
+            methods : {
+                get_people(){
+                    var __this1 = this; 
+                    $.ajax({
+                        url: 'https://api.imgur.com/3/album/bdiXhWX/images',
+                        type: 'GET',
+                        headers: {
+                            Authorization: "Bearer b5a7a4d2240866875333ec725bbb44b8dcb2f85c",
+                            Accept: 'application/json'
+                        },
+                        success: function(result) {
+                            if (result.status = 200) {
+                                __this1.res_data = result;
+                                __this1.fix_array();
+                            }
+                        }
+                    });
+                },
+                fix_array(){
+                    this.people = _.chain(this.res_data).get('data', [])
+                                  .map(objd => {
+                                      var tmpObj = {
+                                              "url" : objd.link,
+                                              "name" : objd.title,
+                                              "phone" : objd.name,
+                                              "email" : objd.description,
+                                          };
+  
+                                      try {
+                                          tmpObj = {
+                                              "url" : objd.link,
+                                              "name" : atob(objd.title),
+                                              "phone" : atob(objd.name),
+                                            "email" : _.get(JSON.parse(atob(objd.description)), '  email', atob(objd.description)),
+                                          }
+                                      }catch(e) {
+                                          
+                                      }
+                                      
+                                      return tmpObj
+  
+                                  })
+                                  .chunk(4).value();
+                }
             }
-          }
         })
     </script>
 

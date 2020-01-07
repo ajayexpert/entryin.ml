@@ -9,6 +9,12 @@
         }
     });
 
+    var oktaData = {
+        profile : {
+            organization : ""
+        }
+    };
+
     if (oktaSignIn.token.hasTokensInUrl()) {
         oktaSignIn.token.parseTokensFromUrl(
             // If we get here, the user just logged in.
@@ -39,6 +45,15 @@
 
                     $('#cust_preloader').addClass('hide');
 
+
+                    $.ajax({
+                        url : 'https://dev-327182.okta.com/api/v1/users/me',
+                        type: 'GET',
+                        success: function(result) {
+                            
+                        }
+                    });
+
                 }
                 else{
                     if (document.location.pathname == "/login.html") {
@@ -64,10 +79,38 @@
     }
 
     $("#logout").on('click', function(){
-        oktaSignIn.session.close();
+        oktaSignIn.signOut();
         document.location.href = "/login.html";
     });
 
     setTimeout(function(){
         $('#cust_preloader').addClass('hide');
     }, 5000);
+
+
+    function getOktaUserInfo() {
+        var baseUrl = 'https://dev-327182.okta.com';
+        $.ajax({
+          url: baseUrl + '/api/v1/users/me',
+          type: 'GET',
+          xhrFields: { withCredentials: true },
+          accept: 'application/json'
+        }).done(function(data) {
+            oktaData.profile = data.profile;
+        })
+        .fail(function(xhr, textStatus, error) {
+          var title, message;
+          switch (xhr.status) {
+            case 403 :
+              title = xhr.responseJSON.errorSummary;
+              message = 'Please login to your Okta organization before running the test';
+              break;
+            default :
+              title = 'Invalid URL or Cross-Origin Request Blocked';
+              message = 'You must explicitly add this site (' + window.location.origin + ') to the list of allowed websites in your administrator UI';
+              break;
+          }
+          // alert(title + ': ' + message);
+        });
+
+    }
