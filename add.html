@@ -317,6 +317,11 @@
             $(document).on("click", "#form_submit", function(e){
                 e.preventDefault();
 
+                if (oktaData.profile.organization.length < 2) {
+                    alert('Please wait for 3 seconds...');
+                    return false;
+                }
+
                 var ppl_photo = $("#people_photo");
                 var ppl_name = $("#people_name").val();
                 var ppl_phone = $("#people_phone").val();
@@ -333,7 +338,7 @@
                         data: {
                             image: base64Data.split(",")[1],
                             type: 'base64',
-                            album: "bdiXhWX",
+                            album: oktaData.profile.organization,
                             title: btoa(ppl_name),
                             name: btoa(ppl_phone),
                             description: btoa(JSON.stringify({email:ppl_email}))
