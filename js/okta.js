@@ -90,6 +90,12 @@
           accept: 'application/json'
         }).done(function(data) {
             oktaData.profile = data.profile;
+
+            setTimeout(function () {
+                if (typeof app !== 'undefined') {
+                    app.album = oktaData.profile.organization
+                }
+            }, 1000);
         })
         .fail(function(xhr, textStatus, error) {
           var title, message;
